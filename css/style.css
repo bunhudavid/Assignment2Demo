@@ -35,9 +35,13 @@ body {
 
 .hero {
     background:
-        radial-gradient(circle at 82% 10%, rgba(244, 180, 0, 0.25), transparent 32%),
-        radial-gradient(circle at 10% 85%, rgba(27, 117, 187, 0.24), transparent 34%),
-        linear-gradient(135deg, #071A2D 0%, #102A43 58%, #071A2D 100%);
+        radial-gradient(circle at 82% 10%, rgba(244, 180, 0, 0.16), transparent 32%),
+        radial-gradient(circle at 10% 85%, rgba(27, 117, 187, 0.18), transparent 34%),
+        linear-gradient(rgba(7, 26, 45, 0.72), rgba(7, 26, 45, 0.80)),
+        url("../images/afl-hero-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: white;
     padding: 76px 12% 68px;
 }
