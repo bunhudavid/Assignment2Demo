@@ -1,0 +1,253 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 520,
+
+  "data": {
+    "url": "data/afl_team_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.home_average)",
+      "as": "home_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.away_average)",
+      "as": "away_average_num"
+    },
+    {
+      "calculate": "datum.home_average_num - datum.away_average_num",
+      "as": "gap"
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 2,
+        "strokeCap": "round"
+      },
+      "encoding": {
+        "y": {
+          "field": "team",
+          "type": "nominal",
+          "sort": {
+            "field": "home_average_num",
+            "order": "descending"
+          },
+          "title": null,
+          "axis": {
+            "labelFont": "Inter",
+            "labelFontSize": 13,
+            "labelColor": "#17212B",
+            "domain": false,
+            "ticks": false,
+            "grid": false
+          }
+        },
+        "x": {
+          "field": "home_average_num",
+          "type": "quantitative",
+          "title": "Average crowd per game",
+          "scale": {
+            "zero": false,
+            "nice": true
+          },
+          "axis": {
+            "format": "~s",
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B",
+            "grid": false,
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "x2": {
+          "field": "away_average_num"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.gap < 0",
+            "value": "#E8923A"
+          },
+          "value": "#D4DEE8"
+        },
+        "opacity": {
+          "condition": {
+            "param": "hoverTeam",
+            "value": 1
+          },
+          "value": 0.35
+        },
+        "tooltip": [
+          {
+            "field": "team",
+            "type": "nominal",
+            "title": "Club"
+          },
+          {
+            "field": "home_average_num",
+            "type": "quantitative",
+            "title": "Home average",
+            "format": ","
+          },
+          {
+            "field": "away_average_num",
+            "type": "quantitative",
+            "title": "Away average",
+            "format": ","
+          },
+          {
+            "field": "gap",
+            "type": "quantitative",
+            "title": "Home − away",
+            "format": "+,"
+          }
+        ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "fold": ["home_average_num", "away_average_num"],
+          "as": ["split", "crowd"]
+        },
+        {
+          "calculate": "datum.split == 'home_average_num' ? 'Home' : 'Away'",
+          "as": "venue_type"
+        }
+      ],
+      "params": [
+        {
+          "name": "hoverTeam",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["team"],
+            "nearest": true
+          }
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "size": 115,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "y": {
+          "field": "team",
+          "type": "nominal",
+          "sort": {
+            "field": "home_average_num",
+            "order": "descending"
+          }
+        },
+        "x": {
+          "field": "crowd",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "venue_type",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Home", "Away"],
+            "range": ["#1B75BB", "#F4B400"]
+          },
+          "legend": {
+            "title": null,
+            "orient": "top",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelColor": "#5F6C7B"
+          }
+        },
+        "opacity": {
+          "condition": {
+            "param": "hoverTeam",
+            "value": 1
+          },
+          "value": 0.4
+        },
+        "tooltip": [
+          {
+            "field": "team",
+            "type": "nominal",
+            "title": "Club"
+          },
+          {
+            "field": "venue_type",
+            "type": "nominal",
+            "title": "Venue"
+          },
+          {
+            "field": "crowd",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          },
+          {
+            "field": "gap",
+            "type": "quantitative",
+            "title": "Home − away",
+            "format": "+,"
+          }
+        ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.team == 'Greater Western Sydney'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 10,
+        "font": "Inter",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "field": "away_average_num",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "team",
+          "type": "nominal",
+          "sort": {
+            "field": "home_average_num",
+            "order": "descending"
+          }
+        },
+        "text": {
+          "value": "Much larger away crowds"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": false
+    },
+    "background": "transparent"
+  }
+}

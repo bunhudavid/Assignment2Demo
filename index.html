@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AFL Nation: Where Australia’s Footy Passion Really Lives</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+
+<body>
+
+    <header class="hero">
+        <div class="hero-content">
+            <p class="eyebrow">DATA VISUALISATION 2 • AFL ATTENDANCE • AUSTRALIA</p>
+
+            <h1>AFL Nation</h1>
+
+            <p class="hero-subtitle">Where Australia’s footy passion really lives</p>
+
+            <p class="hero-intro">
+                AFL is called a national game, but crowd support is not evenly spread.
+                This project uses 2025 attendance data to show where crowd power is strongest:
+                clubs, stadiums, states, and season moments.
+            </p>
+
+            <div class="hero-details">
+                <div>
+                    <strong>Question</strong>
+                    <span>Where is AFL crowd power strongest?</span>
+                </div>
+
+                <div>
+                    <strong>Audience</strong>
+                    <span>Australian sports fans and general readers</span>
+                </div>
+
+                <div>
+                    <strong>Data</strong>
+                    <span>2025 crowds, venues, clubs, rounds, and ladder results</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="section intro-section">
+            <div class="section-label">Opening summary</div>
+
+            <div class="section-heading">
+                <h2>1. The 2025 AFL crowd story at a glance</h2>
+
+                <p>
+                    This visualisation follows a simple story: first, it shows the scale of AFL attendance in 2025;
+                    then it maps where crowd power is concentrated; finally, it tests whether crowd size is explained
+                    by clubs, venues, geography, or winning performance.
+                </p>
+
+                <p>
+                    The season attracted millions of spectators. These headline figures set the scale
+                    before comparing clubs, venues, rounds, and geography.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="kpi_cards" class="chart"></div>
+                <figcaption>
+                    Summary indicators give a quick overview without forcing the reader into detail too early.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Map view</div>
+
+            <div class="section-heading">
+                <h2>2. AFL crowd power is concentrated in southern and western states</h2>
+                <p>
+                    AFL venues are spread across Australia, but total attendance is not evenly distributed.
+                    State shading shows where 2025 AFL crowd power is strongest.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="venue_map" class="chart large-chart"></div>
+                <figcaption>
+                    Darker shading represents higher total AFL attendance by state or territory. Hover for exact crowd, games, average crowd, and venue count.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Club comparison</div>
+
+            <div class="section-heading">
+                <h2>3. Collingwood led the AFL in average regular-season crowd size</h2>
+                <p>
+                    Average home-and-away attendance shows which clubs pulled the strongest crowds in 2025.
+                    Traditional supporter bases and major fixtures help explain why some clubs sit far above the league average.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="club_attendance_bar" class="chart"></div>
+                <figcaption>
+                    Bars show average crowd by club. The dashed line marks the league average, and hovering highlights one club.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Venue ranking</div>
+
+            <div class="section-heading">
+                <h2>4. The MCG dominates AFL venue attendance</h2>
+                <p>
+                    Average crowd per game shows which stadiums consistently attracted the largest AFL audiences in 2025.
+                    This separates venue strength from simply hosting more matches.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="venue_lollipop" class="chart"></div>
+                <figcaption>
+                    Each lollipop shows a venue’s average crowd per game. The dot marks the average, and the line helps compare venues from zero.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Season trend</div>
+
+            <div class="section-heading">
+                <h2>5. Finals crowds dwarf even the biggest home-and-away rounds</h2>
+                <p>
+                    Average crowd per game changed across the 2025 AFL season, but finals created the clearest jump.
+                    The line shows home-and-away rounds, while the finals point shows the average across all finals games.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="round_attendance_line" class="chart"></div>
+                <figcaption>
+                    The line tracks average crowd per game across home-and-away rounds. The gold point highlights finals as a separate high-attendance phase.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Home vs away</div>
+
+            <div class="section-heading">
+                <h2>6. Home or away: where each club's crowds are bigger</h2>
+                <p>
+                    Comparing home and away averages shows whether a club’s crowd strength comes from its own home base
+                    or from appearing in bigger away fixtures.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="home_away_comparison" class="chart"></div>
+                <figcaption>
+                    Each line connects a club’s home and away average crowds. Amber links show clubs with bigger away crowds than home crowds.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Performance link</div>
+
+            <div class="section-heading">
+                <h2>7. Does winning bring bigger crowds?</h2>
+                <p>
+                    Ladder position and wins help test whether crowd size is mainly driven by team performance.
+                    The comparison shows that popularity and geography can matter as much as winning.
+                </p>
+            </div>
+
+            <div class="two-column">
+                <figure class="mini-panel">
+                    <h3>Ladder rank vs average crowd</h3>
+                    <div id="rank_vs_crowd_scatter" class="chart small-chart"></div>
+                    <figcaption>
+                        Each point is a club. The x-axis shows final ladder position, while the y-axis shows average crowd.
+                    </figcaption>
+                </figure>
+
+                <figure class="mini-panel">
+                    <h3>Wins vs total attendance</h3>
+                    <div id="wins_vs_attendance_bubble" class="chart small-chart"></div>
+                    <figcaption>
+                        This chart checks whether clubs with more wins also attracted larger total crowds.
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Distribution</div>
+
+            <div class="section-heading">
+                <h2>8. Most AFL venues draw small crowds — the MCG stands alone</h2>
+                <p>
+                    Venue averages are not evenly spread. Most AFL venues sit in lower attendance bands,
+                    while the MCG separates itself as the clear high-crowd outlier.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="venue_distribution_boxplot" class="chart"></div>
+                <figcaption>
+                    Each dot represents one venue. Dots are grouped into 10,000-crowd bands to show how venue averages are distributed.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Custom idiom</div>
+
+            <div class="section-heading">
+                <h2>9. Each club’s crowd profile: home, away and finals</h2>
+                <p>
+                    These small club cards compare home, away, and finals crowd averages using the same structure for every team.
+                    The dropdown lets readers focus on one crowd type at a time.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="club_report_cards" class="chart"></div>
+                <figcaption>
+                    Each card is one club. Bars show average crowds for home, away, and finals matches; finalists are the only clubs with finals bars.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section">
+            <div class="section-label">Custom idiom 2</div>
+
+            <div class="section-heading">
+                <h2>9B. AFL crowd heat tiles show each club’s crowd pattern</h2>
+                <p>
+                    This custom heat-tile view compares each club across home, away, and finals crowds.
+                    Darker cells show larger average crowds, making each club’s crowd profile easy to scan.
+                </p>
+            </div>
+
+            <figure class="chart-frame">
+                <div id="crowd_heat_tiles" class="chart"></div>
+                <figcaption>
+                    Each row is one club and each tile is one crowd type. Darker blue indicates a larger average crowd, making unusual finals or away-crowd patterns easier to spot.
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="section method-section">
+            <div class="section-label">Design method</div>
+
+            <div class="section-heading">
+                <h2>How the visual encoding works</h2>
+                <p>
+                    This project uses different visual marks and channels for different tasks. Bars and lollipops rank
+                    clubs and venues, colour shading maps geographic concentration, line position shows change across rounds,
+                    dots compare performance with attendance, and heat tiles reveal repeated club-level crowd patterns.
+                </p>
+            </div>
+        </section>
+
+        <section class="section final-section">
+            <div class="section-label">Final message</div>
+
+            <div class="section-heading">
+                <h2>10. Final summary: AFL passion has a geography</h2>
+                <p>
+                    AFL support is national, but crowd power is concentrated around a small set of high-drawing clubs,
+                    major stadiums, and football-heavy states.
+                </p>
+            </div>
+
+            <figure class="chart-frame final-chart-frame">
+                <div id="final_summary_chart" class="chart"></div>
+                <figcaption>
+                    These summary cards bring the story together by identifying the leading club, venue, and state in the 2025 attendance data.
+                </figcaption>
+            </figure>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <h3>Data</h3>
+                <p>
+                    2025 AFL crowd data, ladder data, venue metadata, and Australian state boundary data.
+                </p>
+            </div>
+
+            <div>
+                <h3>Author</h3>
+                <p>
+                    David Bunhu<br>
+                    Data Visualisation 2<br>
+                    2026
+                </p>
+            </div>
+
+            <div>
+                <h3>Tools</h3>
+                <p>
+                    Vega-Lite, HTML, CSS, JavaScript, Mapshaper, and GitHub Pages.
+                </p>
+            </div>
+        </div>
+
+        <p class="footer-note">
+            Metadata: Data covers the 2025 AFL season, including home-and-away matches and finals.
+            Attendance values are aggregated by club, venue, round, and state. Venue coordinates, state labels,
+            and team metadata were prepared as lookup files to support mapping, grouping, and comparison.
+            All charts are built with separate Vega-Lite JSON specifications.
+        </p>
+    </footer>
+
+    <script src="js/vega_embed.js"></script>
+
+</body>
+</html>

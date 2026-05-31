@@ -1,0 +1,210 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "data": {
+    "url": "data/afl_team_crowds_2025.csv"
+  },
+
+  "params": [
+    {
+      "name": "CrowdTypeFilter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "options": ["All", "Home", "Away", "Finals"],
+        "name": "Crowd type: "
+      }
+    },
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover",
+        "clear": "mouseout",
+        "fields": ["team", "venue_type"]
+      }
+    }
+  ],
+
+  "transform": [
+    {
+      "lookup": "team",
+      "from": {
+        "data": {
+          "url": "data/afl_ladder_2025.csv"
+        },
+        "key": "team",
+        "fields": ["rank", "wins"]
+      }
+    },
+    {
+      "calculate": "toNumber(datum.home_average)",
+      "as": "home_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.away_average)",
+      "as": "away_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.finals_average)",
+      "as": "finals_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.rank)",
+      "as": "rank_num"
+    },
+    {
+      "calculate": "toNumber(datum.wins)",
+      "as": "wins_num"
+    },
+    {
+      "calculate": "datum.team == 'Greater Western Sydney' ? 'GWS' : datum.team == 'Western Bulldogs' ? 'Bulldogs' : datum.team == 'North Melbourne' ? 'Nth Melb' : datum.team == 'Port Adelaide' ? 'Port Adel' : datum.team == 'Brisbane Lions' ? 'Brisbane' : datum.team",
+      "as": "club"
+    },
+    {
+      "fold": ["home_average_num", "away_average_num", "finals_average_num"],
+      "as": ["split", "crowd"]
+    },
+    {
+      "calculate": "datum.split == 'home_average_num' ? 'Home' : datum.split == 'away_average_num' ? 'Away' : 'Finals'",
+      "as": "venue_type"
+    },
+    {
+      "filter": "datum.crowd > 0"
+    },
+    {
+      "filter": "CrowdTypeFilter == 'All' || datum.venue_type == CrowdTypeFilter"
+    }
+  ],
+
+  "columns": 6,
+  "spacing": 14,
+
+  "facet": {
+    "field": "club",
+    "type": "nominal",
+    "sort": {
+      "field": "total_average_num",
+      "op": "max",
+      "order": "descending"
+    },
+    "header": {
+      "title": null,
+      "labelFont": "Inter",
+      "labelFontSize": 12,
+      "labelFontWeight": 700,
+      "labelColor": "#071A2D",
+      "labelAnchor": "start",
+      "labelPadding": 4
+    }
+  },
+
+  "spec": {
+    "width": 130,
+    "height": 76,
+
+    "mark": {
+      "type": "bar",
+      "cornerRadiusEnd": 3
+    },
+
+    "encoding": {
+      "y": {
+        "field": "venue_type",
+        "type": "nominal",
+        "sort": ["Home", "Away", "Finals"],
+        "axis": null,
+        "title": null,
+        "scale": {
+          "paddingInner": 0.32
+        }
+      },
+
+      "x": {
+        "field": "crowd",
+        "type": "quantitative",
+        "title": null,
+        "scale": {
+          "zero": true
+        },
+        "axis": {
+          "format": "~s",
+          "grid": false,
+          "domain": false,
+          "ticks": false,
+          "tickCount": 3,
+          "labelFont": "Inter",
+          "labelFontSize": 9,
+          "labelColor": "#5F6C7B"
+        }
+      },
+
+      "color": {
+        "field": "venue_type",
+        "type": "nominal",
+        "scale": {
+          "domain": ["Home", "Away", "Finals"],
+          "range": ["#1B75BB", "#F4B400", "#7B2CBF"]
+        },
+        "legend": {
+          "orient": "top",
+          "title": null,
+          "labelFont": "Inter",
+          "labelFontSize": 12,
+          "labelColor": "#5F6C7B"
+        }
+      },
+
+      "opacity": {
+        "condition": {
+          "param": "hover",
+          "value": 1
+        },
+        "value": 0.6
+      },
+
+      "tooltip": [
+        {
+          "field": "team",
+          "type": "nominal",
+          "title": "Club"
+        },
+        {
+          "field": "venue_type",
+          "type": "nominal",
+          "title": "Crowd type"
+        },
+        {
+          "field": "crowd",
+          "type": "quantitative",
+          "title": "Average crowd",
+          "format": ","
+        },
+        {
+          "field": "rank_num",
+          "type": "quantitative",
+          "title": "Ladder position"
+        },
+        {
+          "field": "wins_num",
+          "type": "quantitative",
+          "title": "Wins"
+        }
+      ]
+    }
+  },
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": false
+    },
+    "background": "transparent"
+  }
+}

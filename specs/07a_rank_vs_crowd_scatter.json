@@ -1,0 +1,225 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 360,
+
+  "data": {
+    "url": "data/afl_team_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "lookup": "team",
+      "from": {
+        "data": {
+          "url": "data/afl_ladder_2025.csv"
+        },
+        "key": "team",
+        "fields": ["rank", "wins", "pts", "percentage"]
+      }
+    },
+    {
+      "calculate": "toNumber(datum.rank)",
+      "as": "rank_num"
+    },
+    {
+      "calculate": "toNumber(datum.wins)",
+      "as": "wins_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "calculate": "datum.rank_num <= 8 ? 'Finals' : 'Missed finals'",
+      "as": "finals"
+    }
+  ],
+
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "hoverClub",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["team"],
+            "nearest": true
+          }
+        }
+      ],
+
+      "mark": {
+        "type": "circle",
+        "size": 110,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2
+      },
+
+      "encoding": {
+        "x": {
+          "field": "rank_num",
+          "type": "quantitative",
+          "title": "Final ladder position",
+          "scale": {
+            "domain": [0.5, 18.5]
+          },
+          "axis": {
+            "tickMinStep": 1,
+            "grid": false,
+            "domain": false,
+            "ticks": false,
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "y": {
+          "field": "total_average_num",
+          "type": "quantitative",
+          "title": "Average crowd",
+          "scale": {
+            "zero": false,
+            "nice": true
+          },
+          "axis": {
+            "format": "~s",
+            "gridColor": "#EEF3F8",
+            "domain": false,
+            "ticks": false,
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "color": {
+          "field": "finals",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Finals", "Missed finals"],
+            "range": ["#1B75BB", "#D7E6F2"]
+          },
+          "legend": {
+            "title": null,
+            "orient": "top",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "opacity": {
+          "condition": {
+            "param": "hoverClub",
+            "value": 1
+          },
+          "value": 0.45
+        },
+
+        "tooltip": [
+          {
+            "field": "team",
+            "type": "nominal",
+            "title": "Club"
+          },
+          {
+            "field": "rank_num",
+            "type": "quantitative",
+            "title": "Ladder position"
+          },
+          {
+            "field": "wins_num",
+            "type": "quantitative",
+            "title": "Wins"
+          },
+          {
+            "field": "total_average_num",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "indexof(['Collingwood', 'Greater Western Sydney', 'Adelaide'], datum.team) >= 0"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 8,
+        "dy": -2,
+        "font": "Inter",
+        "fontSize": 9,
+        "fontWeight": 600,
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "field": "rank_num",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "total_average_num",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "team"
+        }
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.team == 'West Coast'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -8,
+        "dy": -2,
+        "font": "Inter",
+        "fontSize": 9,
+        "fontWeight": 600,
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "field": "rank_num",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "total_average_num",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "team"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "background": "transparent"
+  }
+}

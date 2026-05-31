@@ -1,0 +1,475 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "hconcat": [
+    {
+      "width": 285,
+      "height": 190,
+      "data": {
+        "url": "data/afl_team_crowds_2025.csv"
+      },
+      "transform": [
+        {
+          "calculate": "toNumber(datum.total_average)",
+          "as": "total_avg_num"
+        },
+        {
+          "window": [
+            {
+              "op": "row_number",
+              "as": "rank_order"
+            }
+          ],
+          "sort": [
+            {
+              "field": "total_avg_num",
+              "order": "descending"
+            }
+          ]
+        },
+        {
+          "filter": "datum.rank_order == 1"
+        },
+        {
+          "calculate": "'CLUB POWER'",
+          "as": "card_label"
+        },
+        {
+          "calculate": "'Strongest club crowd draw'",
+          "as": "card_subtitle"
+        },
+        {
+          "calculate": "format(datum.total_avg_num, ',') + ' avg crowd'",
+          "as": "main_value"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "cornerRadius": 16,
+            "fill": "#FFFFFF",
+            "stroke": "#D9EAF8",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 285 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 },
+            "tooltip": [
+              {
+                "field": "team",
+                "type": "nominal",
+                "title": "Club"
+              },
+              {
+                "field": "total_avg_num",
+                "type": "quantitative",
+                "title": "Average crowd",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "rect",
+            "fill": "#1B75BB"
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 6 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "fontWeight": 700,
+            "color": "#1B75BB"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 28 },
+            "text": { "field": "card_label" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 25,
+            "fontWeight": 800,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 70 },
+            "text": { "field": "team" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 118 },
+            "text": { "field": "main_value" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "color": "#5F6C7B"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 154 },
+            "text": { "field": "card_subtitle" }
+          }
+        }
+      ]
+    },
+
+    {
+      "width": 285,
+      "height": 190,
+      "data": {
+        "url": "data/afl_venue_crowds_2025.csv"
+      },
+      "transform": [
+        {
+          "calculate": "toNumber(datum.total_attendance)",
+          "as": "total_attendance_num"
+        },
+        {
+          "window": [
+            {
+              "op": "row_number",
+              "as": "rank_order"
+            }
+          ],
+          "sort": [
+            {
+              "field": "total_attendance_num",
+              "order": "descending"
+            }
+          ]
+        },
+        {
+          "filter": "datum.rank_order == 1"
+        },
+        {
+          "calculate": "'VENUE POWER'",
+          "as": "card_label"
+        },
+        {
+          "calculate": "'Biggest crowd gathering point'",
+          "as": "card_subtitle"
+        },
+        {
+          "calculate": "format(datum.total_attendance_num, ',') + ' total attendance'",
+          "as": "main_value"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "cornerRadius": 16,
+            "fill": "#FFFFFF",
+            "stroke": "#E8EBCF",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 285 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 },
+            "tooltip": [
+              {
+                "field": "venue",
+                "type": "nominal",
+                "title": "Venue"
+              },
+              {
+                "field": "total_attendance_num",
+                "type": "quantitative",
+                "title": "Total attendance",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "rect",
+            "fill": "#8A6D00"
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 6 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "fontWeight": 700,
+            "color": "#8A6D00"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 28 },
+            "text": { "field": "card_label" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 25,
+            "fontWeight": 800,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 70 },
+            "text": { "field": "venue" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 118 },
+            "text": { "field": "main_value" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "color": "#5F6C7B"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 154 },
+            "text": { "field": "card_subtitle" }
+          }
+        }
+      ]
+    },
+
+    {
+      "width": 285,
+      "height": 190,
+      "data": {
+        "url": "data/afl_venue_crowds_2025.csv"
+      },
+      "transform": [
+        {
+          "calculate": "toNumber(datum.total_attendance)",
+          "as": "total_attendance_num"
+        },
+        {
+          "calculate": "datum.venue == 'M.C.G.' || datum.venue == 'Docklands' || datum.venue == 'Eureka Stadium' || datum.venue == 'Kardinia Park' ? 'Victoria' : datum.venue == 'Adelaide Oval' || datum.venue == 'Barossa Park' ? 'South Australia' : datum.venue == 'Perth Stadium' ? 'Western Australia' : datum.venue == 'Gabba' || datum.venue == 'Carrara' ? 'Queensland' : datum.venue == 'S.C.G.' || datum.venue == 'Showground' ? 'New South Wales' : datum.venue == 'Bellerive Oval' ? 'Tasmania' : datum.venue == 'Traeger Park' || datum.venue == 'Marrara Oval' ? 'Northern Territory' : 'Other'",
+          "as": "state"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "total_attendance_num",
+              "as": "state_total_attendance"
+            }
+          ],
+          "groupby": ["state"]
+        },
+        {
+          "window": [
+            {
+              "op": "row_number",
+              "as": "rank_order"
+            }
+          ],
+          "sort": [
+            {
+              "field": "state_total_attendance",
+              "order": "descending"
+            }
+          ]
+        },
+        {
+          "filter": "datum.rank_order == 1"
+        },
+        {
+          "calculate": "'STATE POWER'",
+          "as": "card_label"
+        },
+        {
+          "calculate": "'Strongest football geography'",
+          "as": "card_subtitle"
+        },
+        {
+          "calculate": "format(datum.state_total_attendance, ',') + ' total attendance'",
+          "as": "main_value"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "cornerRadius": 16,
+            "fill": "#FFFFFF",
+            "stroke": "#E4D4F5",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 285 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 },
+            "tooltip": [
+              {
+                "field": "state",
+                "type": "nominal",
+                "title": "State"
+              },
+              {
+                "field": "state_total_attendance",
+                "type": "quantitative",
+                "title": "Total attendance",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "rect",
+            "fill": "#7B2CBF"
+          },
+          "encoding": {
+            "x": { "value": 0 },
+            "x2": { "value": 6 },
+            "y": { "value": 0 },
+            "y2": { "value": 190 }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "fontWeight": 700,
+            "color": "#7B2CBF"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 28 },
+            "text": { "field": "card_label" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 25,
+            "fontWeight": 800,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 70 },
+            "text": { "field": "state" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#071A2D"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 118 },
+            "text": { "field": "main_value" }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "font": "Inter",
+            "fontSize": 12,
+            "color": "#5F6C7B"
+          },
+          "encoding": {
+            "x": { "value": 24 },
+            "y": { "value": 154 },
+            "text": { "field": "card_subtitle" }
+          }
+        }
+      ]
+    }
+  ],
+
+  "spacing": 22,
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "concat": {
+      "spacing": 22
+    },
+    "background": "transparent"
+  }
+}

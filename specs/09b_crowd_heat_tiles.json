@@ -1,0 +1,187 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 440,
+
+  "data": {
+    "url": "data/afl_team_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.home_average)",
+      "as": "home_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.away_average)",
+      "as": "away_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.finals_average)",
+      "as": "finals_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "calculate": "datum.team == 'Greater Western Sydney' ? 'GWS' : datum.team == 'Western Bulldogs' ? 'Bulldogs' : datum.team == 'North Melbourne' ? 'Nth Melb' : datum.team == 'Port Adelaide' ? 'Port Adel' : datum.team == 'Brisbane Lions' ? 'Brisbane' : datum.team",
+      "as": "club"
+    },
+    {
+      "fold": [
+        "home_average_num",
+        "away_average_num",
+        "finals_average_num"
+      ],
+      "as": ["split", "crowd"]
+    },
+    {
+      "calculate": "datum.split == 'home_average_num' ? 'Home' : datum.split == 'away_average_num' ? 'Away' : 'Finals'",
+      "as": "crowd_type"
+    },
+    {
+      "filter": "datum.crowd > 0"
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "rect",
+        "cornerRadius": 4,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.5
+      },
+      "encoding": {
+        "y": {
+          "field": "club",
+          "type": "nominal",
+          "sort": {
+            "field": "total_average_num",
+            "order": "descending"
+          },
+          "title": null,
+          "axis": {
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelFontWeight": 700,
+            "labelColor": "#071A2D",
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "x": {
+          "field": "crowd_type",
+          "type": "nominal",
+          "sort": ["Home", "Away", "Finals"],
+          "title": null,
+          "axis": {
+            "orient": "top",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelFontWeight": 700,
+            "labelColor": "#5F6C7B",
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "color": {
+          "field": "crowd",
+          "type": "quantitative",
+          "title": "Average crowd",
+          "scale": {
+            "domain": [0, 100000],
+            "range": [
+              "#F1F6FB",
+              "#CFE3F4",
+              "#94C2E6",
+              "#4C97D8",
+              "#1B75BB"
+            ]
+          },
+          "legend": {
+            "orient": "right",
+            "format": ".2s",
+            "gradientLength": 170,
+            "gradientThickness": 12,
+            "titleFont": "Inter",
+            "labelFont": "Inter",
+            "titleFontSize": 12,
+            "labelFontSize": 11,
+            "titleColor": "#071A2D",
+            "labelColor": "#5F6C7B"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "team",
+            "type": "nominal",
+            "title": "Club"
+          },
+          {
+            "field": "crowd_type",
+            "type": "nominal",
+            "title": "Crowd type"
+          },
+          {
+            "field": "crowd",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "font": "Inter",
+        "fontSize": 10,
+        "fontWeight": 700
+      },
+      "encoding": {
+        "y": {
+          "field": "club",
+          "type": "nominal",
+          "sort": {
+            "field": "total_average_num",
+            "order": "descending"
+          }
+        },
+        "x": {
+          "field": "crowd_type",
+          "type": "nominal",
+          "sort": ["Home", "Away", "Finals"]
+        },
+        "text": {
+          "field": "crowd",
+          "type": "quantitative",
+          "format": ".2s"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.crowd >= 70000",
+            "value": "#FFFFFF"
+          },
+          "value": "#071A2D"
+        },
+        "opacity": {
+          "value": 0.9
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": false
+    },
+    "background": "transparent"
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 500,
+
+  "projection": {
+    "type": "mercator"
+  },
+
+  "layer": [
+    {
+      "data": {
+        "url": "data/STE_2021_AUST_GDA2020.json",
+        "format": {
+          "type": "topojson",
+          "feature": "STE_2021_AUST_GDA2020"
+        }
+      },
+
+      "params": [
+        {
+          "name": "clickState",
+          "select": {
+            "type": "point",
+            "fields": ["state_code"]
+          }
+        },
+        {
+          "name": "hoverState",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["state_code"]
+          }
+        }
+      ],
+
+      "transform": [
+        {
+          "calculate": "datum.properties.STE_NAME21 == 'New South Wales' ? 'NSW' : datum.properties.STE_NAME21 == 'Victoria' ? 'VIC' : datum.properties.STE_NAME21 == 'Queensland' ? 'QLD' : datum.properties.STE_NAME21 == 'South Australia' ? 'SA' : datum.properties.STE_NAME21 == 'Western Australia' ? 'WA' : datum.properties.STE_NAME21 == 'Tasmania' ? 'TAS' : datum.properties.STE_NAME21 == 'Northern Territory' ? 'NT' : datum.properties.STE_NAME21 == 'Australian Capital Territory' ? 'ACT' : 'Other'",
+          "as": "state_code"
+        },
+        {
+          "lookup": "state_code",
+          "from": {
+            "data": {
+              "url": "data/afl_state_crowds_2025.csv"
+            },
+            "key": "state",
+            "fields": [
+              "total_attendance",
+              "total_games",
+              "average_crowd",
+              "venue_count"
+            ]
+          }
+        },
+        {
+          "calculate": "isValid(datum.total_attendance) ? toNumber(datum.total_attendance) : 0",
+          "as": "attendance_value"
+        },
+        {
+          "calculate": "isValid(datum.total_games) ? toNumber(datum.total_games) : 0",
+          "as": "games_value"
+        },
+        {
+          "calculate": "isValid(datum.average_crowd) ? toNumber(datum.average_crowd) : 0",
+          "as": "average_value"
+        },
+        {
+          "calculate": "isValid(datum.venue_count) ? toNumber(datum.venue_count) : 0",
+          "as": "venue_value"
+        }
+      ],
+
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1
+      },
+
+      "encoding": {
+        "color": {
+          "field": "attendance_value",
+          "type": "quantitative",
+          "title": "Total attendance",
+          "scale": {
+            "domainMin": 0,
+            "range": [
+              "#EEF4FA",
+              "#CFE3F4",
+              "#94C2E6",
+              "#4C97D8",
+              "#1B75BB",
+              "#07508C"
+            ]
+          },
+          "legend": {
+            "orient": "right",
+            "format": "~s",
+            "gradientLength": 170,
+            "gradientThickness": 12,
+            "titleFont": "Inter",
+            "labelFont": "Inter",
+            "titleFontSize": 12,
+            "labelFontSize": 11,
+            "titleColor": "#071A2D",
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "opacity": {
+          "condition": {
+            "param": "clickState",
+            "value": 1
+          },
+          "value": 0.35
+        },
+
+        "strokeWidth": {
+          "condition": {
+            "param": "hoverState",
+            "empty": false,
+            "value": 2.2
+          },
+          "value": 1
+        },
+
+        "tooltip": [
+          {
+            "field": "properties.STE_NAME21",
+            "type": "nominal",
+            "title": "State / territory"
+          },
+          {
+            "field": "attendance_value",
+            "type": "quantitative",
+            "title": "Total attendance",
+            "format": ","
+          },
+          {
+            "field": "games_value",
+            "type": "quantitative",
+            "title": "Games",
+            "format": ","
+          },
+          {
+            "field": "average_value",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          },
+          {
+            "field": "venue_value",
+            "type": "quantitative",
+            "title": "Venues",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "data": {
+        "url": "data/australia_state_labels.csv"
+      },
+
+      "mark": {
+        "type": "text",
+        "font": "Inter",
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#32475B",
+        "opacity": 0.78
+      },
+
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label",
+          "type": "nominal"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "legend": {
+      "labelFont": "Inter",
+      "titleFont": "Inter",
+      "labelColor": "#5F6C7B",
+      "titleColor": "#071A2D"
+    },
+    "background": "transparent"
+  }
+}

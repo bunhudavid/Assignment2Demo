@@ -1,0 +1,173 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 460,
+
+  "data": {
+    "url": "data/afl_venue_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_attendance)",
+      "as": "total_attendance_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_games)",
+      "as": "total_games_num"
+    },
+    {
+      "calculate": "toNumber(datum.finals_average)",
+      "as": "finals_average_num"
+    },
+    {
+      "calculate": "datum.total_average_num >= 55000 ? 'MCG' : datum.total_average_num >= 40000 ? 'Major venue' : 'Other venues'",
+      "as": "venue_group"
+    }
+  ],
+
+  "encoding": {
+    "y": {
+      "field": "venue",
+      "type": "nominal",
+      "sort": "-x",
+      "title": null,
+      "axis": {
+        "labelFont": "Inter",
+        "labelFontSize": 13,
+        "labelColor": "#17212B",
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "x": {
+      "field": "total_average_num",
+      "type": "quantitative",
+      "title": "Average crowd",
+      "scale": { "zero": true },
+      "axis": {
+        "format": "~s",
+        "grid": false,
+        "domain": false,
+        "ticks": false,
+        "labelFont": "Inter",
+        "labelFontSize": 11,
+        "labelColor": "#5F6C7B",
+        "titleFont": "Inter",
+        "titleFontSize": 12,
+        "titleColor": "#5F6C7B"
+      }
+    }
+  },
+
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "hoverVenue",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["venue"],
+            "nearest": true
+          }
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 2,
+        "strokeCap": "round"
+      },
+      "encoding": {
+        "x": { "datum": 0, "type": "quantitative" },
+        "x2": { "field": "total_average_num" },
+        "color": {
+          "field": "venue_group",
+          "type": "nominal",
+          "scale": {
+            "domain": ["MCG", "Major venue", "Other venues"],
+            "range": ["#1B75BB", "#7FB3D5", "#D7E6F2"]
+          },
+          "legend": {
+            "title": null,
+            "orient": "bottom",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelColor": "#5F6C7B"
+          }
+        },
+        "opacity": {
+          "condition": { "param": "hoverVenue", "value": 1 },
+          "value": 0.4
+        }
+      }
+    },
+
+    {
+      "mark": {
+        "type": "circle",
+        "size": 120,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "color": {
+          "field": "venue_group",
+          "type": "nominal",
+          "scale": {
+            "domain": ["MCG", "Major venue", "Other venues"],
+            "range": ["#1B75BB", "#7FB3D5", "#D7E6F2"]
+          },
+          "legend": null
+        },
+        "opacity": {
+          "condition": { "param": "hoverVenue", "value": 1 },
+          "value": 0.4
+        },
+        "tooltip": [
+          { "field": "venue", "type": "nominal", "title": "Venue" },
+          { "field": "total_average_num", "type": "quantitative", "title": "Average crowd", "format": "," },
+          { "field": "total_attendance_num", "type": "quantitative", "title": "Total attendance", "format": "," },
+          { "field": "total_games_num", "type": "quantitative", "title": "Games hosted", "format": "," },
+          { "field": "finals_average_num", "type": "quantitative", "title": "Finals average", "format": "," }
+        ]
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 8,
+        "font": "Inter",
+        "fontSize": 12,
+        "fontWeight": 700,
+        "color": "#071A2D"
+      },
+      "encoding": {
+        "text": {
+          "field": "total_average_num",
+          "type": "quantitative",
+          "format": ",.0f"
+        },
+        "opacity": {
+          "condition": { "param": "hoverVenue", "value": 1 },
+          "value": 0.32
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": false },
+    "background": "transparent"
+  }
+}

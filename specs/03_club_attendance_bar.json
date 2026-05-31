@@ -1,0 +1,241 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 500,
+
+  "data": {
+    "url": "data/afl_team_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_attendance)",
+      "as": "total_attendance_num"
+    },
+    {
+      "calculate": "toNumber(datum.home_average)",
+      "as": "home_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.away_average)",
+      "as": "away_average_num"
+    },
+    {
+      "calculate": "toNumber(datum.finals_average)",
+      "as": "finals_average_num"
+    },
+    {
+      "calculate": "datum.total_average_num >= 60000 ? 'Leader' : datum.total_average_num >= 45000 ? 'Top group' : 'Other clubs'",
+      "as": "crowd_group"
+    }
+  ],
+
+  "layer": [
+    {
+      "params": [
+        {
+          "name": "hoverBar",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["team"]
+          }
+        }
+      ],
+
+      "mark": {
+        "type": "bar",
+        "cornerRadiusEnd": 5
+      },
+
+      "encoding": {
+        "y": {
+          "field": "team",
+          "type": "nominal",
+          "sort": "-x",
+          "title": null,
+          "axis": {
+            "labelFont": "Inter",
+            "labelFontSize": 13,
+            "labelColor": "#17212B",
+            "domain": false,
+            "ticks": false
+          }
+        },
+
+        "x": {
+          "field": "total_average_num",
+          "type": "quantitative",
+          "title": "Average crowd",
+          "axis": {
+            "format": "~s",
+            "grid": false,
+            "domain": false,
+            "ticks": false,
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "labelColor": "#5F6C7B",
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B"
+          }
+        },
+
+        "color": {
+          "field": "crowd_group",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Leader", "Top group", "Other clubs"],
+            "range": ["#1B75BB", "#7FB3D5", "#D7E6F2"]
+          },
+          "legend": {
+            "title": null,
+            "orient": "bottom",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "opacity": {
+          "condition": {
+            "param": "hoverBar",
+            "value": 1
+          },
+          "value": 0.42
+        },
+
+        "tooltip": [
+          {
+            "field": "team",
+            "type": "nominal",
+            "title": "Club"
+          },
+          {
+            "field": "total_average_num",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          },
+          {
+            "field": "total_attendance_num",
+            "type": "quantitative",
+            "title": "Total H&A attendance",
+            "format": ","
+          },
+          {
+            "field": "home_average_num",
+            "type": "quantitative",
+            "title": "Home average",
+            "format": ","
+          },
+          {
+            "field": "away_average_num",
+            "type": "quantitative",
+            "title": "Away average",
+            "format": ","
+          },
+          {
+            "field": "finals_average_num",
+            "type": "quantitative",
+            "title": "Finals average",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "#6B7A8A",
+        "strokeDash": [4, 4],
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "aggregate": "mean",
+          "field": "total_average_num",
+          "type": "quantitative"
+        }
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "text": "League average",
+        "align": "left",
+        "baseline": "bottom",
+        "dx": 5,
+        "dy": -5,
+        "font": "Inter",
+        "fontSize": 11,
+        "fontStyle": "italic",
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "aggregate": "mean",
+          "field": "total_average_num",
+          "type": "quantitative"
+        },
+        "y": {
+          "value": 0
+        }
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 7,
+        "font": "Inter",
+        "fontSize": 12,
+        "fontWeight": 700,
+        "color": "#071A2D"
+      },
+      "encoding": {
+        "y": {
+          "field": "team",
+          "type": "nominal",
+          "sort": "-x"
+        },
+        "x": {
+          "field": "total_average_num",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "total_average_num",
+          "type": "quantitative",
+          "format": ","
+        },
+        "opacity": {
+          "condition": {
+            "param": "hoverBar",
+            "value": 1
+          },
+          "value": 0.35
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": false
+    },
+    "background": "transparent"
+  }
+}

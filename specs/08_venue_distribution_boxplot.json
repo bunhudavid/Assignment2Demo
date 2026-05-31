@@ -1,0 +1,238 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 420,
+
+  "layer": [
+    {
+      "data": {
+        "url": "data/afl_venue_crowds_2025.csv"
+      },
+
+      "transform": [
+        {
+          "calculate": "toNumber(datum.total_average)",
+          "as": "total_average_num"
+        },
+        {
+          "calculate": "toNumber(datum.total_games)",
+          "as": "total_games_num"
+        },
+        {
+          "bin": {
+            "step": 10000
+          },
+          "field": "total_average_num",
+          "as": "binStart"
+        },
+        {
+          "window": [
+            {
+              "op": "rank",
+              "as": "stackN"
+            }
+          ],
+          "groupby": ["binStart"],
+          "sort": [
+            {
+              "field": "total_average_num",
+              "order": "ascending"
+            }
+          ]
+        },
+        {
+          "calculate": "datum.binStart + 5000",
+          "as": "binMid"
+        },
+        {
+          "calculate": "datum.total_average_num >= 50000 ? 'MCG' : 'Other venues'",
+          "as": "tier"
+        }
+      ],
+
+      "params": [
+        {
+          "name": "hoverVenue",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["venue"],
+            "nearest": true
+          }
+        }
+      ],
+
+      "mark": {
+        "type": "circle",
+        "size": 220,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2,
+        "opacity": 0.9
+      },
+
+      "encoding": {
+        "x": {
+          "field": "binMid",
+          "type": "quantitative",
+          "title": "Average crowd per game",
+          "scale": {
+            "domain": [0, 70000]
+          },
+          "axis": {
+            "values": [0, 10000, 20000, 30000, 40000, 50000, 60000, 70000],
+            "format": "~s",
+            "grid": false,
+            "domain": false,
+            "ticks": false,
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "y": {
+          "field": "stackN",
+          "type": "quantitative",
+          "title": "Venue count",
+          "scale": {
+            "domain": [0, 7.2]
+          },
+          "axis": {
+            "tickMinStep": 1,
+            "format": "d",
+            "gridColor": "#EEF3F8",
+            "domain": false,
+            "ticks": false,
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B"
+          }
+        },
+
+        "color": {
+          "field": "tier",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Other venues", "MCG"],
+            "range": ["#9EC9E6", "#1B75BB"]
+          },
+          "legend": null
+        },
+
+        "strokeWidth": {
+          "condition": {
+            "param": "hoverVenue",
+            "empty": false,
+            "value": 2.5
+          },
+          "value": 1.2
+        },
+
+        "tooltip": [
+          {
+            "field": "venue",
+            "type": "nominal",
+            "title": "Venue"
+          },
+          {
+            "field": "total_average_num",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          },
+          {
+            "field": "total_games_num",
+            "type": "quantitative",
+            "title": "Games hosted",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "data": {
+        "values": [
+          {
+            "x": 15000,
+            "y": 6.7,
+            "t": "Most venues sit below 20k"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "font": "Inter",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    },
+
+    {
+      "data": {
+        "values": [
+          {
+            "x": 65000,
+            "y": 2.4,
+            "t": "MCG stands alone"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "font": "Inter",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "fontWeight": 700,
+        "color": "#1B75BB"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": true
+    },
+    "background": "transparent"
+  }
+}

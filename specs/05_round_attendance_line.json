@@ -1,0 +1,289 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 420,
+
+  "data": {
+    "url": "data/afl_round_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.average)",
+      "as": "average_num"
+    },
+    {
+      "calculate": "toNumber(datum.total)",
+      "as": "total_num"
+    },
+    {
+      "calculate": "toNumber(datum.games)",
+      "as": "games_num"
+    },
+    {
+      "calculate": "datum.round == 'Finals' ? 'Finals' : 'Home & away'",
+      "as": "phase"
+    }
+  ],
+
+  "layer": [
+    {
+      "transform": [
+        {
+          "filter": "datum.phase == 'Home & away'"
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "stroke": "#6B7A8A",
+        "strokeDash": [4, 4],
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "y": {
+          "aggregate": "mean",
+          "field": "average_num",
+          "type": "quantitative"
+        }
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.phase == 'Home & away'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "bottom",
+        "dy": -4,
+        "font": "Inter",
+        "fontSize": 10,
+        "fontStyle": "italic",
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "value": 5
+        },
+        "y": {
+          "aggregate": "mean",
+          "field": "average_num",
+          "type": "quantitative"
+        },
+        "text": {
+          "value": "Home & away average"
+        }
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": {
+            "param": "hoverRound"
+          }
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "stroke": "#9AA7B4",
+        "strokeWidth": 1,
+        "opacity": 0.55
+      },
+      "encoding": {
+        "x": {
+          "field": "round",
+          "type": "nominal",
+          "sort": null
+        }
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.phase == 'Home & away'"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#1B75BB",
+        "strokeWidth": 2.4
+      },
+      "encoding": {
+        "x": {
+          "field": "round",
+          "type": "nominal",
+          "sort": null
+        },
+        "y": {
+          "field": "average_num",
+          "type": "quantitative"
+        }
+      }
+    },
+
+    {
+      "params": [
+        {
+          "name": "hoverRound",
+          "select": {
+            "type": "point",
+            "on": "pointerover",
+            "clear": "pointerout",
+            "fields": ["round"],
+            "nearest": true
+          }
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "x": {
+          "field": "round",
+          "type": "nominal",
+          "sort": null,
+          "title": null,
+          "axis": {
+            "labelAngle": -40,
+            "labelExpr": "replace(datum.label, 'Round ', 'R')",
+            "labelFont": "Inter",
+            "labelFontSize": 10,
+            "labelColor": "#17212B",
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "y": {
+          "field": "average_num",
+          "type": "quantitative",
+          "title": "Average crowd per game",
+          "axis": {
+            "format": "~s",
+            "labelFont": "Inter",
+            "labelFontSize": 11,
+            "titleFont": "Inter",
+            "titleFontSize": 12,
+            "titleColor": "#5F6C7B",
+            "labelColor": "#5F6C7B",
+            "gridColor": "#EEF3F8",
+            "domain": false,
+            "ticks": false
+          }
+        },
+        "color": {
+          "field": "phase",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Home & away", "Finals"],
+            "range": ["#1B75BB", "#F4B400"]
+          },
+          "legend": {
+            "title": null,
+            "orient": "top",
+            "labelFont": "Inter",
+            "labelFontSize": 12,
+            "labelColor": "#5F6C7B"
+          }
+        },
+        "size": {
+          "condition": {
+            "test": "datum.phase == 'Finals'",
+            "value": 150
+          },
+          "value": 70
+        },
+        "opacity": {
+          "condition": {
+            "param": "hoverRound",
+            "value": 1
+          },
+          "value": 0.85
+        },
+        "strokeWidth": {
+          "condition": {
+            "param": "hoverRound",
+            "empty": false,
+            "value": 2.5
+          },
+          "value": 1.2
+        },
+        "tooltip": [
+          {
+            "field": "round",
+            "type": "nominal",
+            "title": "Round"
+          },
+          {
+            "field": "average_num",
+            "type": "quantitative",
+            "title": "Average crowd",
+            "format": ","
+          },
+          {
+            "field": "total_num",
+            "type": "quantitative",
+            "title": "Total attendance",
+            "format": ","
+          },
+          {
+            "field": "games_num",
+            "type": "quantitative",
+            "title": "Games",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.phase == 'Finals'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "bottom",
+        "dx": -10,
+        "dy": -7,
+        "font": "Inter",
+        "fontSize": 11,
+        "fontWeight": 700,
+        "color": "#8A6D00"
+      },
+      "encoding": {
+        "x": {
+          "field": "round",
+          "type": "nominal",
+          "sort": null
+        },
+        "y": {
+          "field": "average_num",
+          "type": "quantitative"
+        },
+        "text": {
+          "value": "Finals peak: 66,771 avg"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": true
+    },
+    "background": "transparent"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "width": "container",
+  "height": 165,
+
+  "data": {
+    "url": "data/afl_venue_crowds_2025.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "toNumber(datum.total_attendance)",
+      "as": "total_attendance_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_games)",
+      "as": "total_games_num"
+    },
+    {
+      "calculate": "toNumber(datum.total_average)",
+      "as": "total_average_num"
+    },
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "total_attendance_num",
+          "as": "season_attendance"
+        },
+        {
+          "op": "sum",
+          "field": "total_games_num",
+          "as": "total_games"
+        },
+        {
+          "op": "mean",
+          "field": "total_average_num",
+          "as": "average_venue_crowd"
+        },
+        {
+          "op": "max",
+          "field": "total_average_num",
+          "as": "highest_average"
+        }
+      ]
+    },
+    {
+      "fold": [
+        "season_attendance",
+        "total_games",
+        "average_venue_crowd",
+        "highest_average"
+      ],
+      "as": ["metric", "raw_value"]
+    },
+    {
+      "calculate": "datum.metric == 'season_attendance' ? 'Total attendance' : datum.metric == 'total_games' ? 'Games recorded' : datum.metric == 'average_venue_crowd' ? 'Average crowd' : 'Highest average'",
+      "as": "label"
+    },
+    {
+      "calculate": "datum.metric == 'season_attendance' ? 1 : datum.metric == 'total_games' ? 2 : datum.metric == 'average_venue_crowd' ? 3 : 4",
+      "as": "order"
+    },
+    {
+      "calculate": "format(datum.raw_value, ',.0f')",
+      "as": "value"
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "rect",
+        "cornerRadius": 16,
+        "fill": "#FFFFFF",
+        "stroke": "#E6EEF5",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "order",
+          "type": "ordinal",
+          "axis": null
+        },
+        "tooltip": [
+          {
+            "field": "label",
+            "type": "nominal",
+            "title": "Metric"
+          },
+          {
+            "field": "raw_value",
+            "type": "quantitative",
+            "title": "Value",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "middle",
+        "dy": -16,
+        "font": "Inter",
+        "fontSize": 30,
+        "fontWeight": 800,
+        "color": "#071A2D"
+      },
+      "encoding": {
+        "x": {
+          "field": "order",
+          "type": "ordinal",
+          "axis": null
+        },
+        "text": {
+          "field": "value"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "middle",
+        "dy": 28,
+        "font": "Inter",
+        "fontSize": 13,
+        "fontWeight": 600,
+        "color": "#5F6C7B"
+      },
+      "encoding": {
+        "x": {
+          "field": "order",
+          "type": "ordinal",
+          "axis": null
+        },
+        "text": {
+          "field": "label"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "axis": {
+      "grid": false,
+      "domain": false,
+      "ticks": false
+    },
+    "background": "transparent"
+  }
+}
